@@ -15,4 +15,19 @@ class Feature extends Model
     protected $casts = [
         'type' => FeatureType::class,
     ];
+
+    public function comparison()
+    {
+        return $this->belongsTo(ProductComparison::class, 'product_comparison_id');
+    }
+
+    public function getOptions()
+    {
+        return $this->comparison
+            ->products
+            ->map(fn(Product $product) => $product->features->firstWhere('id', $this->id)->pivot->value)
+            ->unique()
+            ->sort()
+            ->values();
+    }
 }
