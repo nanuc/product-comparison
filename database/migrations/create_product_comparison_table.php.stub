@@ -1,0 +1,60 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::connection(config('product-comparison.database'))->create('product_comparisons_table', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::connection(config('product-comparison.database'))->create('products_table', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('product_comparison_id');
+            $table->string('name');
+            $table->string('description')->nullable();
+            $table->text('comments')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::connection(config('product-comparison.database'))->create('features_table', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('product_comparison_id');
+            $table->string('type');
+            $table->string('name');
+            $table->string('description')->nullable();
+            $table->text('comments')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::connection(config('product-comparison.database'))->create('product_feature_table', function (Blueprint $table) {
+            $table->unsignedBigInteger('product_id')->index();
+            $table->unsignedBigInteger('feature_id')->index();
+            $table->boolean('product_has_feature')->default(1);
+            $table->text('comments')->nullable();
+        });
+
+        Schema::connection(config('product-comparison.database'))->create('price_models_table', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('product_comparison_id');
+            $table->string('name');
+            $table->string('description')->nullable();
+            $table->text('comments')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::connection(config('product-comparison.database'))->create('product_price_model_table', function (Blueprint $table) {
+            $table->unsignedBigInteger('product_id')->index();
+            $table->unsignedBigInteger('price_model_id')->index();
+            $table->text('comments')->nullable();
+            $table->unsignedInteger('price');
+            $table->string('currency')->default('USD');
+        });
+    }
+};
