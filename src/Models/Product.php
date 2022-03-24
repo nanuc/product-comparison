@@ -69,11 +69,13 @@ class Product extends Model
         $priceData = $this->priceModels()->firstWhere('price_model_id', $priceModel->id)->pivot;
 
         if($priceData['currency'] != $this->comparison->currency) {
-            $price = Currency::convert()
-                ->from($priceData['currency'])
-                ->to($this->comparison->currency)
-                ->amount($priceData['price'])
-                ->get();
+            $price = cache()->remember('price-model-' . $this->id . '-' . $priceModel->id, now()->addDays(3), function() use ($priceData) {
+                return Currency::convert()
+                    ->from($priceData['currency'])
+                    ->to($this->comparison->currency)
+                    ->amount($priceData['price'])
+                    ->get();
+            });
         }
         else {
             $price = $priceData['price'];
