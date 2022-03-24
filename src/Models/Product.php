@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Nanuc\ProductComparison\Enums\FeatureType;
 use Nanuc\ProductComparison\Models\Pivot\ProductFeature;
+use Nanuc\ProductComparison\Models\Pivot\ProductPriceModel;
 use Spatie\Translatable\HasTranslations;
+use AmrShawky\LaravelCurrency\Facade\Currency;
 
 class Product extends Model
 {
@@ -14,11 +16,23 @@ class Product extends Model
 
     protected $translatable = ['name', 'description', 'comments'];
 
+    public function comparison()
+    {
+        return $this->belongsTo(ProductComparison::class, 'product_comparison_id');
+    }
+
     public function features()
     {
         return $this->belongsToMany(Feature::class, 'product_feature')
             ->withPivot('value')
             ->using(ProductFeature::class);
+    }
+
+    public function priceModels()
+    {
+        return $this->belongsToMany(PriceModel::class, 'product_price_model')
+            ->withPivot(['comments', 'price', 'currency'])
+            ->using(ProductPriceModel::class);
     }
 
     public function getFeatures()
@@ -48,5 +62,23 @@ class Product extends Model
         elseif($feature->type == FeatureType::TEXT) {
             return view('product-comparison::feature.text', ['text' => $value])->render();
         }
+    }
+
+    public function getPrice(PriceModel $priceModel)
+    {
+        $priceData = $this->priceModels()->firstWhere('price_model_id', $priceModel->id)->pivot;
+
+        if($priceData['currency'] != $this->comparison->currency) {
+            $price = Currency::convert()
+                ->from($priceData['currency'])
+                ->to($this->comparison->currency)
+                ->amount($priceData['price'])
+                ->get();
+        }
+        else {
+            $price = $priceData['price'];
+        }
+
+        return round($price) . ' ' . $this->comparison->currency;
     }
 }
