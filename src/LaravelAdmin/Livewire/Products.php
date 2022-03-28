@@ -2,32 +2,50 @@
 
 namespace Nanuc\ProductComparison\LaravelAdmin\Livewire;
 
-use Livewire\Component;
+use Illuminate\Support\Arr;
+use Nanuc\ProductComparison\Models\Feature;
 use Nanuc\ProductComparison\Models\Product;
 
-class Products extends Component
+class Products extends BaseComponent
 {
-    public \Nanuc\ProductComparison\Models\ProductComparison $productComparison;
-    public Product $product;
-    public $language;
+    protected $modelClass = Product::class;
 
-    protected $listeners = [
-        'updatedLanguage',
-    ];
+    public $url;
 
-    public function render()
+    public $pivotValues = [];
+
+    protected function getRenderParameters()
     {
-        return view('product-comparison::admin.products');
+        return [
+            'productFeatures' => $this->model
+                ?->features
+                ->mapWithKeys(fn($productFeature) => [$productFeature->id => $productFeature->pivot])
+                ->toArray(),
+        ];
     }
 
-    public function setProduct(Product $product)
+    public function setFeature(Feature $feature, $value)
     {
-        $this->product = $product;
+        app()->setLocale($this->language);
+        $this->model->features()->syncWithoutDetaching([$feature->id => compact('value')]);
+        $this->model->load('features');
     }
 
-    public function updatedLanguage($language)
+    public function updatePivotValues($type, $index, $comments)
     {
-        $this->language = $language;
+        app()->setLocale($this->language);
+        $this->pivotValues[$index][$type][$this->language] = $comments;
+
+        $this->model->features()->syncWithoutDetaching([$index => [
+            'comments' => Arr::get($this->pivotValues, $index . '.comments'),
+            'value' => Arr::get($this->pivotValues, $index . '.value'),
+        ]]);
+        $this->model->load('features');
+    }
+
+    public function setPivotValues(Product $product)
+    {
+        $this->pivotValues = $product->features->mapWithKeys(fn($feature) => [$feature->id => $feature->pivot])->toArray();
     }
 }
 

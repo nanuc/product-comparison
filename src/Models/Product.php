@@ -24,7 +24,7 @@ class Product extends Model
     public function features()
     {
         return $this->belongsToMany(Feature::class, 'product_feature')
-            ->withPivot('value')
+            ->withPivot(['value', 'comments'])
             ->using(ProductFeature::class);
     }
 

@@ -7,5 +7,7 @@ use Nanuc\ProductComparison\Models\Feature;
 class Features extends BaseComponent
 {
     protected $modelClass = Feature::class;
+
+    public $type;
 }
 
