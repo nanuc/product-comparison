@@ -8,6 +8,10 @@
                     </x-app-ui::link>
                 </div>
             @endforeach
+            <hr class="mt-2 mb-2">
+            <x-app-ui::link class="cursor-pointer" wire:click="addNew">
+                Add
+            </x-app-ui::link>
         </div>
         @if($model)
             <div class="ml-4 flex-1">
@@ -34,6 +38,9 @@
 
                 @yield('content')
 
+                <div class="mt-4">
+                    <x-helpers::modals.delete />
+                </div>
             </div>
         @endif
     </div>

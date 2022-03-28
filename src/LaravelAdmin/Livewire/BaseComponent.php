@@ -45,6 +45,24 @@ abstract class BaseComponent extends Component
         $this->description = $this->model->description;
     }
 
+    public function addNew()
+    {
+        $model = new $this->modelClass;
+        $model->product_comparison_id = $this->productComparison->id;
+        $model->setTranslation('name', $this->mainLanguage, 'New');
+        $model->save();
+
+        $this->productComparison->load($this->getRelation());
+        $this->setModel($model->id);
+    }
+
+    public function delete()
+    {
+        $this->model->delete();
+        $this->productComparison->load($this->getRelation());
+        $this->reset(['name', 'comments', 'description', 'model', 'type']);
+    }
+
     public function updatedLanguage($language)
     {
         $this->language = $language;
