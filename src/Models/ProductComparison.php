@@ -3,6 +3,7 @@
 namespace Nanuc\ProductComparison\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Spatie\Translatable\HasTranslations;
 
 class ProductComparison extends Model
@@ -10,6 +11,10 @@ class ProductComparison extends Model
     use HasTranslations;
 
     protected $translatable = ['currency'];
+
+    protected $casts = [
+        'languages' => 'array'
+    ];
 
     public function products()
     {
@@ -29,5 +34,10 @@ class ProductComparison extends Model
     public static function byName($name)
     {
         return self::firstWhere('name', $name);
+    }
+
+    public function getMainLanguage()
+    {
+        return Arr::first($this->languages);
     }
 }

@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::connection(config('product-comparison.database'))->create('product_comparisons_table', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->json('languages');
+            $table->json('currency');
             $table->timestamps();
         });
 
