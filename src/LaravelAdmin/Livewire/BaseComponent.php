@@ -50,11 +50,11 @@ abstract class BaseComponent extends Component
             }
         }
 
-        if(method_exists($this, 'setPivotValues')) {
-            $this->setPivotValues($this->model);
-        }
         if(method_exists($this, 'setFeatureValues')) {
             $this->setFeatureValues($this->model);
+        }
+        if(method_exists($this, 'setPriceValues')) {
+            $this->setPriceValues($this->model);
         }
     }
 
@@ -73,7 +73,7 @@ abstract class BaseComponent extends Component
     {
         $this->model->delete();
         $this->productComparison->load($this->getRelation());
-        $this->reset(['name', 'comments', 'description', 'model', 'type']);
+        $this->reset(['name', 'comments', 'description', 'model']);
     }
 
     public function updatedLanguage($language)
@@ -108,10 +108,15 @@ abstract class BaseComponent extends Component
         $this->setModel($this->model->id);
     }
 
-    public function translatePivotWithDeepL($field, $index)
+    public function translatePivotWithDeepL($featureOrPriceModel, $field, $index)
     {
         app()->setLocale($this->language);
-        $this->updatePivotValues($field, $index, $this->autoTranslate(Arr::get($this->pivotValues, $index . '.' . $field . '.' . $this->mainLanguage)));
+        if($featureOrPriceModel == 'featureValues') {
+            $this->updateFeatureValues($field, $index, $this->autoTranslate(Arr::get($this->featureValues, $index . '.' . $field . '.' . $this->mainLanguage)));
+        }
+        else {
+            $this->updatePriceValues($field, $index, $this->autoTranslate(Arr::get($this->priceValues, $index . '.' . $field . '.' . $this->mainLanguage)));
+        }
     }
 
     private function autoTranslate($text)
