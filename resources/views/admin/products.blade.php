@@ -54,6 +54,8 @@
                                     <x-app-ui::textarea :wire:model.lazy="'featureValues.' . $feature->id . '.value.' . app()->getLocale()" />
                                 @elseif($type == 'enum')
                                     <x-app-ui::input :wire:model.lazy="'featureValues.' . $feature->id . '.value.' . app()->getLocale()" />
+                                @elseif($type == 'number')
+                                    <x-app-ui::input type="number" :wire:model.lazy="'featureValues.' . $feature->id . '.value.' . app()->getLocale()" />
                                 @endif
                             </div>
                             <div>

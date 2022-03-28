@@ -63,7 +63,7 @@
             </th>
             @foreach($products as $product)
                 <th scope="col" class="whitespace-nowrap sticky top-0 z-10 border-b border-gray-300 bg-gray-50 bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8">
-                    <div class="inline-block">
+                    <div class="inline-block" @if($product->comments) data-tippy-content="{{ $product->comments }}" @endif>
                         {{ $product->name }}
                     </div>
                     <div class="inline-block">
@@ -79,12 +79,12 @@
         <tbody class="bg-white">
             @foreach($comparison->features as $feature)
                 <tr>
-                    <td class="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
+                    <td class="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8" @if($feature->comments) data-tippy-content="{{ $feature->comments }}" @endif>
                         {{ $feature->name }}
                     </td>
 
                     @foreach($products as $product)
-                        <td class="whitespace-nowrap border-b py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6 lg:pl-8">
+                        <td class="whitespace-nowrap border-b py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6 lg:pl-8" @if($comments = $product->features()->firstWhere('id', $feature->id)?->pivot->comments) data-tippy-content="{{ $comments }}" @endif>
                             {!! $product->renderFeature($feature) !!}
                         </td>
                     @endforeach
@@ -93,12 +93,12 @@
 
             @foreach($comparison->priceModels as $priceModel)
                 <tr>
-                    <td class="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
+                    <td class="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8" @if($priceModel->comments) data-tippy-content="{{ $priceModel->comments }}" @endif>
                         {{ $priceModel->name }}
                     </td>
 
                     @foreach($products as $product)
-                        <td class="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6 lg:pl-8">
+                        <td class="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6 lg:pl-8" @if($comments = $product->priceModels()->firstWhere('id', $priceModel->id)?->pivot->comments) data-tippy-content="{{ $comments }}" @endif>
                             {!! $product->getPrice($priceModel) !!}
                         </td>
                     @endforeach
@@ -107,4 +107,3 @@
         </tbody>
     </table>
 </div>
-

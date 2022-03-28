@@ -7,6 +7,7 @@
         <x-app-ui::select label="Type" wire:model="type">
             <option>boolean</option>
             <option>enum</option>
+            <option>number</option>
             <option>text</option>
         </x-app-ui::select>
     </div>
