@@ -4,6 +4,7 @@ namespace Nanuc\ProductComparison\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\URL;
 use Nanuc\ProductComparison\Enums\FeatureType;
 use Nanuc\ProductComparison\Models\Pivot\ProductFeature;
 use Nanuc\ProductComparison\Models\Pivot\ProductPriceModel;

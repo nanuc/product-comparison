@@ -3,6 +3,8 @@
 namespace Nanuc\ProductComparison\LaravelAdmin\Livewire;
 
 use Illuminate\Support\Arr;
+use Maatwebsite\Excel\Facades\Excel;
+use Nanuc\ProductComparison\Exports\ProductExport;
 use Nanuc\ProductComparison\Models\Feature;
 use Nanuc\ProductComparison\Models\Product;
 
@@ -71,6 +73,11 @@ class Products extends BaseComponent
     {
         $this->priceValues = $product->priceModels->mapWithKeys(fn($priceModel) => [$priceModel->id => $priceModel->pivot])->toArray();
 
+    }
+
+    public function downloadExcel($language)
+    {
+        return Excel::download(new ProductExport($this->model, $language), $this->model->name . '.xlsx');
     }
 }
 

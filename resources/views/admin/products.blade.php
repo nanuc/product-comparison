@@ -134,5 +134,12 @@
                 @endif
             @endforeach
         </x-helpers::tab>
+        <x-helpers::tab name="Downloads">
+            @foreach($productComparison->languages as $language)
+                <x-app-ui::button wire:click="downloadExcel('{{ $language }}')">
+                    Download Excel ({{ $language }})
+                </x-app-ui::button>
+            @endforeach
+        </x-helpers::tab>
     </x-helpers::tabs>
 @endsection
