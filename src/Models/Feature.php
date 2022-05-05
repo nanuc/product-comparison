@@ -25,7 +25,7 @@ class Feature extends Model
     {
         return $this->comparison
             ->products
-            ->map(fn(Product $product) => $product->features->firstWhere('id', $this->id)->pivot->value)
+            ->map(fn(Product $product) => $product->features->firstWhere('id', $this->id)?->pivot->value)
             ->unique()
             ->sort()
             ->values();
