@@ -2,6 +2,7 @@
 
 namespace Nanuc\ProductComparison\Http\Livewire;
 
+use Illuminate\Support\Arr;
 use Livewire\Component;
 use Nanuc\ProductComparison\Enums\FeatureType;
 use Nanuc\ProductComparison\Models\Feature;
@@ -54,7 +55,7 @@ class Comparison extends Component
 
             if($feature->type == FeatureType::BOOLEAN) {
                 foreach($selectedItems as $selectedItem) {
-                    if(!$productFeatures[$selectedItem]) {
+                    if(!Arr::get($productFeatures, $selectedItem)) {
                         return false;
                     }
                 }
